@@ -49,11 +49,10 @@ function Grid(){
                 var row1 = "|";
                 var row2 = "|";
                 var row3 = "|";
+                var row = rows[ y ];
+                var cells = row.getCells();
 
                 for( var x = 1; x <= 9; x++){
-                    var row = rows[ y ];
-                    var cells = row.getCells();
-                    console.log(cells);
                     var cell = cells[x];
                     var debug_drawing = cell.debugDraw();
                     var debug_drawing_rows = debug_drawing.split("\n");
