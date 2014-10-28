@@ -1,4 +1,4 @@
-function Cell(){
+function Cell(n){
     var clusters = [];
     var is_set = false;
     var possibilities = {
@@ -12,6 +12,8 @@ function Cell(){
         8:true,
         9:true
     };
+    var number = n;
+    var possibility_count = 9;
 
     var value;
 
@@ -24,10 +26,11 @@ function Cell(){
                 value = v;
                 is_set = true;
                 for( var i = 1; i <= 9; i++){
-                    if( i != v ){
+                    if( i != value ){
                         this.removePossibleValue( i );
                     }
                 }
+                clusters.forEach( function( cluster ){ cluster.removePossibleValue( value );});
                 return true;
             }
             return false;
@@ -40,11 +43,12 @@ function Cell(){
         debugDraw : function(){
             var drawing = "";
 
-            for( var position = 1; position <= 9; position++){
-                if( position % 3 === 1){
-                    drawing += " ";
-                }
-                drawing += possibilities[ position ] ? position : " ";
+            if( is_set != true ){
+                for( var position = 1; position <= 9; position++){
+                    if( position % 3 === 1){
+                        drawing += " ";
+                    }
+                    drawing += possibilities[ position ] ? position : " ";
                     if (position % 3 == 0) {
                         drawing += " \n";
 
@@ -53,12 +57,52 @@ function Cell(){
                     else {
                         drawing += " ";
                     }
+                }
+            }
+            else{
+                drawing += "       \n   " + value + "   \n       ";
             }
             return drawing;
 
         },
         removePossibleValue : function( possible_value ){
-            possibilities[ possible_value ] = false;
+            if( possibilities[ possible_value ]){
+                possibility_count--;
+                possibilities[ possible_value ] = false;
+                clusters.forEach( function( cluster ){ cluster.decreasePossibility( possible_value ) });
+
+
+            } },
+        getPossibilityCount : function(){
+            return possibility_count;
+        },
+        setOnlyPossibleValue : function(){
+            if( possibility_count == 0 ) return false;
+            for( var p = 1; p <= 9; p++ ){
+                if( possibilities[p] ){
+                    this.setValue( p );
+                    return true;
+                }
+            }
+        },
+        isSet : function(){
+            return is_set;
+        },
+        getPossibilities : function(){
+            var poss = [];
+            for( var p = 1; p <= 9; p++ ){
+                if( possibilities[p] ){
+                    poss.push( p );
+                }
+            }
+            return poss;
+        },
+        getNumber : function(){
+            return number;
+        },
+        hasOnePossibleValue : function(){
+            if( possibility_count == 1) return true;
+            return false;
         }
     }
 }

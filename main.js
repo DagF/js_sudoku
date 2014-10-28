@@ -37,6 +37,7 @@ var grid = [
 
 
 var s = new Sudoku( grid );
+s.solve();
 var d = s.debugDraw();
 
 document.getElementById("output").innerHTML = d;

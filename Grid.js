@@ -11,7 +11,7 @@ function Grid(){
     }
 
     for( var c = 0; c < 9*9; c++ ){
-        var cell = new Cell();
+        var cell = new Cell( c );
         cells[c + 1] = cell;
 
         var row = ( c - (c % 9)) / 9 + 1;
@@ -37,7 +37,7 @@ function Grid(){
         },
         clone : function(){
             var g = new Grid();
-            setValuesByExistingGrid( g, grid );
+            setValuesByExistingGrid( g, this );
             return g;
         },
         draw : function(){
@@ -66,11 +66,46 @@ function Grid(){
                 drawing += "+-------+-------+-------+-------+-------+-------+-------+-------+-------+\n";
             }
             return drawing;
+        },
+        setCellsWithOnePossibleValue : function(){
+            cells.forEach( function( cell ){
+                if( cell.hasOnePossibleValue() && !cell.isSet() ){
+                    cell.setOnlyPossibleValue();
+                }
+            });
+
+        },
+        setOnlyPossibleCellForValue : function(){
+            rows.forEach( function( row ){
+                if( row.hasOnePossibleCellForAValue() ){
+                    row.setOnlyPossibleCell();
+                }
+            });
+
+            columns.forEach( function( row ){
+                if( row.hasOnePossibleCellForAValue() ){
+                    row.setOnlyPossibleCell();
+                }
+            });
+
+            groups.forEach( function( row ){
+                if( row.hasOnePossibleCellForAValue() ){
+                    row.setOnlyPossibleCell();
+                }
+            });
+        },
+        getCells : function(){
+            return cells;
         }
     }
 
 
     function setValuesByExistingGrid( new_grid, existing_grid ){
+        var new_cells = new_grid.getCells();
+        var existing_cells = existing_grid.getCells();
+        for( var c = 1; c <= 81; c++){
+            new_cells[c].setValue( existing_cells[c].getValue() );
+        }
 
     }
 }
