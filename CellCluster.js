@@ -1,4 +1,4 @@
-function CellCluster(){
+function CellCluster( grid ){
     var cells = [];
     var length = 0;
     var possibilities = {
@@ -13,6 +13,9 @@ function CellCluster(){
         9:9
     };
     return {
+        getGrid : function(){
+            return grid;
+        },
         addCell : function( cell ){
             length++;
             cells[ length ] =  cell;

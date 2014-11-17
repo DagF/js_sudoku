@@ -22,7 +22,7 @@ function Cell(n){
             return value;
         },
         setValue : function( v ){
-            if( is_set != true ){
+            if( is_set != true && possibilities[ v ] ){
                 value = v;
                 is_set = true;
                 for( var i = 1; i <= 9; i++){
@@ -31,9 +31,12 @@ function Cell(n){
                     }
                 }
                 clusters.forEach( function( cluster ){ cluster.removePossibleValue( value );});
-                return true;
+
             }
-            return false;
+            else{
+                console.log( v );
+                throw "Value already set";
+            }
         },
         addCluster : function( cluster ){
             clusters.push( cluster );
@@ -72,7 +75,11 @@ function Cell(n){
                 clusters.forEach( function( cluster ){ cluster.decreasePossibility( possible_value ) });
 
 
-            } },
+            }
+            if( !is_set && possibility_count < 1 ){
+                throw "No more possible values";
+            }
+        },
         getPossibilityCount : function(){
             return possibility_count;
         },
@@ -103,6 +110,21 @@ function Cell(n){
         hasOnePossibleValue : function(){
             if( possibility_count == 1) return true;
             return false;
+        },
+        hasPossibleValueGreaterThan : function( n ){
+            for( var p = n + 1; p <= 9; p++ ){
+                if( possibilities[p] ){
+                    return true;
+                }
+            }
+            return false;
+        },
+        getFirstPossibleValueGreaterThan : function( n ){
+            for( var p = n + 1; p <= 9; p++ ){
+                if( possibilities[p] ){
+                    return p;
+                }
+            }
         }
     }
 }

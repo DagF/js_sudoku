@@ -2,12 +2,13 @@ function Grid(){
     var groups = [],
         columns = [],
         rows = [],
-        cells = [];
+        cells = [],
+        is_solvable = true;
 
     for( var i = 1; i <= 9; i++ ){
-        groups[i] = new CellCluster();
-        columns[i] = new CellCluster();
-        rows[i] = new CellCluster();
+        groups[i] = new CellCluster( this );
+        columns[i] = new CellCluster( this );
+        rows[i] = new CellCluster( this);
     }
 
     for( var c = 0; c < 9*9; c++ ){
@@ -24,12 +25,19 @@ function Grid(){
         groups[group].addCell( cell );
     }
 
+
     return{
+        setUnsolvable : function(){
+            is_solvable = false;
+        },
+        isSolvable : function(){
+            return is_solvable;
+        },
         setValuesByRawGrid : function( grid ) {
             for( var y = 0; y < 9; y++){
                 for (var x = 0; x < 9; x++) {
                     var value = grid[y][x];
-                    if( value != null ){
+                    if( typeof value == "number" ){
                         rows[y+1].getCells()[x+1].setValue( value );
                     }
                 }
@@ -37,7 +45,7 @@ function Grid(){
         },
         clone : function(){
             var g = new Grid();
-            setValuesByExistingGrid( g, this );
+            g.setValuesByExistingGrid( this );
             return g;
         },
         draw : function(){
@@ -68,44 +76,69 @@ function Grid(){
             return drawing;
         },
         setCellsWithOnePossibleValue : function(){
+            var values_set = 0;
             cells.forEach( function( cell ){
                 if( cell.hasOnePossibleValue() && !cell.isSet() ){
                     cell.setOnlyPossibleValue();
+                    values_set++;
                 }
             });
-
+            return values_set;
         },
         setOnlyPossibleCellForValue : function(){
+            var values_set = 0;
             rows.forEach( function( row ){
                 if( row.hasOnePossibleCellForAValue() ){
                     row.setOnlyPossibleCell();
+                    values_set++;
                 }
             });
 
             columns.forEach( function( row ){
                 if( row.hasOnePossibleCellForAValue() ){
                     row.setOnlyPossibleCell();
+                    values_set++;
                 }
             });
 
             groups.forEach( function( row ){
                 if( row.hasOnePossibleCellForAValue() ){
                     row.setOnlyPossibleCell();
+                    values_set++;
                 }
             });
+            return values_set;
         },
         getCells : function(){
             return cells;
+        },
+        setValuesByExistingGrid : function( existing_grid ){
+            var new_cells = this.getCells();
+            var existing_cells = existing_grid.getCells();
+            for( var c = 1; c <= 81; c++){
+                var value = existing_cells[c].getValue();
+                if( typeof value == "number" ){
+                    new_cells[c].setValue( value );
+                }
+            }
+
+        },
+        getFirstUnsetCell : function( cell_number ){
+            console.log( "c: " + cell_number )
+            for( var c = cell_number; c < 81; c++ ){
+                if( !cells[ c ].isSet() ){
+                    return cells[ c ];
+                }
+            }
+        },
+        getCellByNumber : function( cell_number ){
+            return cell = cells[ cell_number ];
+        },
+        setValueByGuess : function( guess ){
+            var value = cells[ guess.getNumber()].getPossibilities()[ guess.getValue() ];
+           cells[ guess.getNumber()].setValue( value );
         }
     }
 
 
-    function setValuesByExistingGrid( new_grid, existing_grid ){
-        var new_cells = new_grid.getCells();
-        var existing_cells = existing_grid.getCells();
-        for( var c = 1; c <= 81; c++){
-            new_cells[c].setValue( existing_cells[c].getValue() );
-        }
-
-    }
 }
