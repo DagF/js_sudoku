@@ -41,8 +41,6 @@ function Cell(n){
         addCluster : function( cluster ){
             clusters.push( cluster );
         },
-        draw : function(){
-        },
         debugDraw : function(){
             var drawing = "";
 
@@ -73,8 +71,6 @@ function Cell(n){
                 possibility_count--;
                 possibilities[ possible_value ] = false;
                 clusters.forEach( function( cluster ){ cluster.decreasePossibility( possible_value ) });
-
-
             }
             if( !is_set && possibility_count < 1 ){
                 throw "No more possible values";
@@ -104,7 +100,7 @@ function Cell(n){
             }
             return poss;
         },
-        getNumber : function(){
+        getCellNumber : function(){
             return number;
         },
         hasOnePossibleValue : function(){
