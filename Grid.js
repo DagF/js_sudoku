@@ -55,7 +55,7 @@ function Grid(){
 
     function getCellWithFewPossibilities(){
         for( p = 2; p <= 9; p++){
-            for( var i = 1; i <= cells.length; i++){
+            for( var i = 1; i < cells.length; i++){
                 if( cells[i].getPossibilities().length == p){
                     return cells[i];
                 }
